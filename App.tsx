@@ -7,7 +7,8 @@
 
 import React from 'react';
 import {SafeAreaView} from 'react-native';
-import ContactList from './src/components/test/ContactList';
+import ProductCRUD from './src/components/demo11/ProductCRUD';
+// import ContactList from './src/components/test/ContactList';
 // import HelloWordScreen from './src/components/demo1/HelloWordScreen';
 // import Props from './src/components/demo1/Props';
 // import State from './src/components/demo1/State';
@@ -39,7 +40,8 @@ function App() {
       {/* <BMI></BMI> */}
       {/* <StudentManagement></StudentManagement> */}
       <SafeAreaView style={{flex: 1}}>
-        <ContactList />
+        {/* <ContactList /> */}
+        <ProductCRUD />
       </SafeAreaView>
     </>
   );
