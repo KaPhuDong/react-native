@@ -43,7 +43,8 @@ const ProductCRUD = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [img, setImg] = useState('pen.jpg'); // ảnh mặc định
+  const [img, setImg] = useState('pen.jpg');
+  const [searchText, setSearchText] = useState(''); // 🔍 thêm state tìm kiếm
 
   // 🔹 Lấy dữ liệu
   const loadData = async () => {
@@ -54,6 +55,11 @@ const ProductCRUD = () => {
   useEffect(() => {
     initDatabase(loadData);
   }, []);
+
+  // 🔹 Lọc theo từ khóa
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchText.toLowerCase()),
+  );
 
   // 🔹 Mở form thêm / sửa
   const openForm = (product?: Product) => {
@@ -146,8 +152,24 @@ const ProductCRUD = () => {
         </TouchableOpacity>
       </View>
 
+      {/* 🔍 Ô tìm kiếm */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="🔍 Tìm kiếm sản phẩm..."
+          placeholderTextColor="#999"
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+        {searchText.length > 0 && (
+          <TouchableOpacity onPress={() => setSearchText('')}>
+            <Text style={styles.clearText}>✕</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
       <FlatList
-        data={products}
+        data={filteredProducts}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         numColumns={3}
@@ -225,20 +247,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff9b6b',
     paddingVertical: 12,
   },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  list: {
-    padding: 10,
-  },
-  row: {
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
+  header: {fontSize: 20, fontWeight: 'bold', color: '#fff'},
+  list: {padding: 10},
+  row: {justifyContent: 'space-between', marginBottom: 15},
   card: {
-    flex: 1,
+    width: '31%', // 👈 Mỗi card chiếm khoảng 1/3 hàng, chừa khoảng trống giữa
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 10,
@@ -253,11 +266,7 @@ const styles = StyleSheet.create({
   name: {fontSize: 12, fontWeight: '600', textAlign: 'center'},
   price: {color: '#ff5c4e', fontWeight: '500', fontSize: 12, marginVertical: 4},
   actions: {flexDirection: 'row', gap: 4},
-  button: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
+  button: {paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6},
   buttonText: {color: '#fff', fontSize: 11, fontWeight: 'bold'},
   addButton: {
     backgroundColor: '#ff5c4e',
@@ -266,6 +275,33 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   addButtonText: {color: '#fff', fontWeight: 'bold', fontSize: 13},
+
+  // 🔍 Search bar
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginHorizontal: 16,
+    marginVertical: 10,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 8,
+    fontSize: 14,
+    color: '#333',
+  },
+  clearText: {
+    fontSize: 16,
+    color: '#ff5c4e',
+    fontWeight: 'bold',
+    marginLeft: 5,
+  },
 
   // Modal
   modalOverlay: {
@@ -288,11 +324,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-  chooseImageText: {
-    fontWeight: '600',
-    marginBottom: 5,
-    color: '#444',
-  },
+  chooseImageText: {fontWeight: '600', marginBottom: 5, color: '#444'},
   saveButton: {
     backgroundColor: '#ff5c4e',
     padding: 12,
@@ -306,10 +338,5 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 10,
   },
-  imageOption: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    margin: 4,
-  },
+  imageOption: {width: 60, height: 60, borderRadius: 8, margin: 4},
 });
